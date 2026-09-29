@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Clipponak Login</title>
+<style>
+  :root { --bg:#fff8f2; --fg:#2a1a12; --muted:#7a5a48; --accent:#f3542d; --box:#fff; --line:#f0d9c9; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1c1410; --fg:#f6ebe3; --muted:#c9a893; --accent:#ff8a55; --box:#2a1e18; --line:#4a3528; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 system-ui, sans-serif; }
+  main { max-width:640px; margin:0 auto; padding:48px 16px; }
+  h1 { margin:0 0 8px; font-size:24px; } p { color:var(--muted); }
+  textarea { width:100%; box-sizing:border-box; min-height:120px; font:13px/1.4 ui-monospace, monospace;
+             background:var(--box); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:10px; }
+  button { margin-top:10px; background:var(--accent); color:#fff; border:0; border-radius:8px;
+           padding:10px 18px; font-size:16px; font-weight:600; cursor:pointer; }
+  .err { color:#d33; font-weight:600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Hampir selesai</h1>
+  <p id="info">Salin alamat di bawah ini, lalu tempel di kotak <b>“Simpan login”</b> pada halaman Akun di Clipponak (laptopmu).</p>
+  <textarea id="url" readonly></textarea>
+  <button id="salin" type="button">Salin</button>
+  <p style="font-size:14px">Halaman ini tidak menyimpan atau mengirim apa pun — kodenya hanya ditampilkan di browsermu.
+    Kode berlaku beberapa menit, jadi segera tempel.</p>
+</main>
+<script>
+  var u = location.href, q = new URLSearchParams(location.search);
+  document.getElementById('url').value = u;
+  if (q.get('error')) {
+    document.getElementById('info').innerHTML = '<span class="err">Login dibatalkan / ditolak: ' +
+      (q.get('error_description') || q.get('error')).replace(/[<>&]/g, '') + '</span>';
+  } else if (!q.get('code')) {
+    document.getElementById('info').textContent = 'Tidak ada kode login di alamat ini. Mulai lagi dari tombol Hubungkan di Clipponak.';
+  }
+  document.getElementById('salin').onclick = function () {
+    var t = document.getElementById('url'); t.select();
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).catch(function () { document.execCommand('copy'); });
+    this.textContent = 'Tersalin ✓';
+  };
+</script>
+</body>
+</html>
